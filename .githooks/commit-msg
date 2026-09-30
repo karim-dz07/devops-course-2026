@@ -1,0 +1,10 @@
+#!/bin/bash
+# Validate the first line of a commit message.
+IFS= read -r first_line < "$1" || [ -n "$first_line" ]
+pattern='^(feat|fix|docs|chore|refactor|merge|test|ci|build|perf|style)(\([^)]+\))?: .+'
+if ! printf '%s\n' "$first_line" | grep -qE "$pattern"; then
+    echo 'ОШИБКА: сообщение коммита не соответствует Conventional Commits.' >&2
+    echo 'Ожидаемый формат: <type>: <description> или <type>(<scope>): <description>' >&2
+    printf 'Ваше сообщение: %s\n' "$first_line" >&2
+    exit 1
+fi
